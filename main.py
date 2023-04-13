@@ -7,10 +7,11 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 1
-SHORT_BREAK_MIN = 5
+WORK_MIN = .1
+SHORT_BREAK_MIN = .1
 LONG_BREAK_MIN = 20
 reps = 0
+checks = ''
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
@@ -25,12 +26,15 @@ def start_timer():
     #If its the 1st/3rd/5th/7th rep:
     if reps % 2 !=  0:
         count_down(work_sec)
+        timer_label.config(text='Work', fg=GREEN)
     # #If its the 8th rep:
     if reps % 8 == 0:
         count_down(long_break_sec)
+        timer_label.config(text='Break', fg=RED)
     # #if its the 2nd/4th/6th rep:
     if reps % 2 == 0:
         count_down(short_break_sec)
+        timer_label.config(text='Break', fg=PINK)
     
 
     print(reps)
@@ -49,6 +53,10 @@ def count_down(count):
         window.after(1000, count_down, count - 1)
     else:
         start_timer()
+        global checks
+        if reps % 2 == 0:
+            checks += '✅'
+            checkmarks_label.config(text=checks)
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -73,8 +81,7 @@ reset_button = Button(highlightbackground=YELLOW)
 reset_button.config(text='Reset')
 reset_button.grid(column=2, row=2)
 
-checkmark_label = Label(bg=YELLOW)
-checkmark_label.config(text='✅')
-checkmark_label.grid(column=1, row=3)
+checkmarks_label = Label(bg=YELLOW)
+checkmarks_label.grid(column=1, row=3)
 
 window.mainloop()
