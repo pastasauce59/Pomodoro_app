@@ -12,8 +12,19 @@ SHORT_BREAK_MIN = .1
 LONG_BREAK_MIN = 20
 reps = 0
 checks = ''
+timer = None
 
 # ---------------------------- TIMER RESET ------------------------------- # 
+def reset_timer():
+    window.after_cancel(timer)
+    canvas.itemconfigure(timer_text, text='00:00')
+    timer_label.config(text='Timer', fg=GREEN)
+    global checks
+    checks = ''
+    checkmarks_label.config(text='')
+    global reps
+    reps = 0
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_timer():
@@ -36,9 +47,6 @@ def start_timer():
         count_down(short_break_sec)
         timer_label.config(text='Break', fg=PINK)
     
-
-    print(reps)
-
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(count):
 
@@ -48,9 +56,10 @@ def count_down(count):
         count_sec = f'0{count_sec}'
 
 
+    canvas.itemconfig(timer_text, text=f"{count_minute}:{count_sec}")
     if count > 0:
-        canvas.itemconfig(timer_text, text=f"{count_minute}:{count_sec}")
-        window.after(1000, count_down, count - 1)
+        global timer
+        timer = window.after(1000, count_down, count - 1)
     else:
         start_timer()
         global checks
@@ -77,7 +86,7 @@ start_button = Button(highlightbackground=YELLOW, command=start_timer)
 start_button.config(text='Start')
 start_button.grid(column=0, row=2)
 
-reset_button = Button(highlightbackground=YELLOW)
+reset_button = Button(highlightbackground=YELLOW, command=reset_timer)
 reset_button.config(text='Reset')
 reset_button.grid(column=2, row=2)
 
